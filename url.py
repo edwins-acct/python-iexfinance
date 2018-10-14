@@ -20,7 +20,7 @@ querystring = parse_qs(parse.query)
 data = response.text
 parsed = json.loads(data)
 #print(json.dumps(parsed))
-#print(json.dumps(parsed, indent=4))
+print(json.dumps(parsed, indent=4))
 
 #print(data)
 #print(parse.query)
