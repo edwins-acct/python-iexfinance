@@ -2,5 +2,14 @@ V
 FB
 NBIX
 SFIX
-MDB
+baba
 MSFT
+NOW
+spgi
+pypl
+twtr
+amrn
+abmd
+isrg
+algn
+psx
