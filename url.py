@@ -9,7 +9,7 @@ file = open("config.txt","r")
 fileContent = file.read()
 file.close()
 fileContent=fileContent.replace('\n',',')
-#print(fileContent)
+fileContent= fileContent.upper()
 url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(fileContent) +"&types=quote"#&displayPercent=true"
 url1= "https://api.iextrading.com/1.0/stock/market/batch?symbols=AAPL&types=price,news"
 #print(url)
@@ -40,19 +40,26 @@ hereis=querystring['symbols'][0].split(',')
 #print(price)
 #sys.exit()
 print("{:<10}{:>10}{:>10}{:>10}{:>15}{:>15}{:>15}{:>8}{:>10}".format("Ticker","Price","Change","Change %","Change YTD%","Volume","AvgVolume","ChgVol","MktCap"))
+#print(f"Ticker{:<10}Price{:>10}Change{:>10}Change %{:>10}Change YTD%{:>15}Volume{:>15}AvgVolume{:>15}ChgVol{:>8}MktCap{:>10}")
 for ticker in hereis:
-	ticker = ticker.upper()
-	#	print("company: " + str(parsed[ticker]['quote']['companyName']), end=" ,")
-	price = f"{parsed[ticker]['quote']['latestPrice']:.2f}"
-	chgPct = "{0:.2%}".format(parsed[ticker]['quote']['changePercent'])
-	vol= "{:,}".format(parsed[ticker]['quote']['latestVolume'])
-	avgVol = "{:,}".format(parsed[ticker]['quote']['avgTotalVolume'])
-	chgVol = "{0:.0%}".format(parsed[ticker]['quote']['latestVolume']/parsed[ticker]['quote']['avgTotalVolume'])
-	chgYtd = "{0:.2%}".format(parsed[ticker]['quote']['ytdChange'])
-	mktCap = "{:,}".format(int("{0:.0f}".format(parsed[ticker]['quote']['marketCap']/1000000)))
+	price = f"{parsed[ticker]['quote']['latestPrice']:.2f}".join('$ ')
+	change = f"{parsed[ticker]['quote']['change']:.2f}"
+	chgPct = f"{parsed[ticker]['quote']['changePercent']:.2%}"
+	vol= f"{parsed[ticker]['quote']['latestVolume']:,}"
+	avgVol = f"{parsed[ticker]['quote']['avgTotalVolume']:,}"
+	chgVol = f"{(parsed[ticker]['quote']['latestVolume']/parsed[ticker]['quote']['avgTotalVolume']):.0%}"
+	chgYtd = f"{parsed[ticker]['quote']['ytdChange']:.2%}"
+	tmp_mktCap = f"{(parsed[ticker]['quote']['marketCap']/1000000):.0f}"
+	mktCap = f"{int(tmp_mktCap):,}".join(' B')
+#	chgPct = "{:.2%}".format(parsed[ticker]['quote']['changePercent'])
+#	vol= "{:,}".format(parsed[ticker]['quote']['latestVolume'])
+#	avgVol = "{:,}".format(parsed[ticker]['quote']['avgTotalVolume'])
+#	chgVol = "{:.0%}".format(parsed[ticker]['quote']['latestVolume']/parsed[ticker]['quote']['avgTotalVolume'])
+#	chgYtd = "{:.2%}".format(parsed[ticker]['quote']['ytdChange'])
+	#mktCap = "{:,}".format(int("{0:.0f}".format(parsed[ticker]['quote']['marketCap']/1000000)))
 	#mktCap1 = "{:,}".format(int(mktCap))
 	#print("{:<10}{:>10}{:>10}{:>10}{:>15}{:>15}{:>15}{:>8}{:>10}".format(ticker, (str(price)).join("$ "), parsed[ticker]['quote']['change'],chgPct,chgYtd, vol, avgVol,chgVol,mktCap.join(" B")))	
-	print(f"{ticker:<10}{str(price).join('$ '):>10}{parsed[ticker]['quote']['change']:>10.2f}{chgPct:>10}{chgYtd:>15}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap.join(' B'):>10}")
+	print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{chgYtd:>15}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap:>10}")
 
 	#print("ticker: " + str(ticker), end=" ,")
 	#print("closing price: " + str(parsed[ticker]['quote']['iexRealtimePrice']), end=" ,")
