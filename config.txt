@@ -2,6 +2,7 @@ V
 FB
 NBIX
 SFIX
+unh
 baba
 MSFT
 NOW
@@ -13,4 +14,8 @@ abmd
 isrg
 algn
 psx
+mdb
 zuo
+mu
+nflx
+amzn
