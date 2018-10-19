@@ -1,6 +1,6 @@
 #!python3
 
-import requests,json,sys,os,datetime
+import requests,json,sys,os,datetime, re
 import pandas as pd 
 from urllib.parse import urlparse, urlsplit, parse_qsl, parse_qs
 
@@ -14,15 +14,40 @@ rightNow = int(x.strftime("%H%M"))
 if len(sys.argv) > 1:
 	qString = ','.join(sys.argv[1:])
 else: 
-	#url= "https://api.iextrading.com/1.0/stock/nbix/peers"
-	#url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=aapl,fb&types=quote&range=1m&last=2"
-	#file = open("C:\\Users\erobles3\Desktop\\config.txt", "r")
+	filename = "config.txt"
+	if not os.path.isfile(filename):
+		print(f"{filename} does not exist")
+		sys.exit()
+	with open(filename) as file:
+		lines = file.readlines()
+	
+	#with open(filename, "w") as file:
+	#	lines = filter(lambda x: x.strip(), lines)
+	#	file.writelines(lines)
+	#if not os.path.isfile(filename):
+    #	print(f"{filename} does not exist ")
+    #	sys.exit()
+    #with open(filename) as file:
+    #	lines = file.readlines()
+
+    #with open(filename, 'w') as file:
+    #	lines = filter(lambda x: x.strip(), lines)
+    #	file.writelines(lines) 
 	file = open("config.txt","r")
 	fileContent = file.read()
 	file.close()
+	#stripped_content = ''.join(line.strip() for line in fileContent.splitlines())
+	#fileContent = re.sub(r'^\n',)
+	#qString=fileContent.replace('\n\n','')
 	qString=fileContent.replace('\n',',')
+	#qString=fileContent.replace(',,',',')
+	#qString=lines.replace('\n',',')
 
+#print(stripped_content)
+#sys.exit()
+#url= "https://api.iextrading.com/1.0/stock/nbix/peers"
 url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=quote"#&displayPercent=true"
+#url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=stats"#&displayPercent=true"
 response = requests.get(url) #gets info
 parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextrading.com', path='/1.0/stock/market/batch', params='', query='symbols=V,FB,NBIX&types=quote', fragment='')
 #querystringl = parse_qsl(parse.query) #prints> [('symbols', 'V,FB,NBIX'), ('types', 'quote')]
@@ -35,10 +60,10 @@ symbolsList=querystring['symbols'][0].split(',')
 #print("{:<10}{:>10}{:>10}{:>10}{:>15}{:>15}{:>15}{:>8}{:>10}".format("Ticker","Price","Change","Change %","Change YTD%","Volume","AvgVolume","ChgVol","MktCap"))
 #print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'ExtPrice':>10}{'ExtChgPct':>10}")
 if rightNow < 630 or rightNow >= 1300:
-	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'ExtPrice':>10}{'ExtChgPct':>10}")
+	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
 	ext = 1
 else:
-	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}")
+	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}\n")
 	ext = 0
 
 for ticker in sorted(symbolsList):
