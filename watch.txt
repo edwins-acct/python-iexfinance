@@ -1,0 +1,12 @@
+beat
+mdb
+okta
+newr
+nflx
+aapl
+ttd
+roku
+med
+alrm
+mrvl
+cien
