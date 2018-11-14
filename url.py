@@ -81,7 +81,10 @@ for ticker in sorted(symbolsList):
 		chgVol = f"{(parsed[ticker]['quote']['latestVolume']/parsed[ticker]['quote']['avgTotalVolume']):.0%}"
 		chgYtd = f"{parsed[ticker]['quote']['ytdChange']:.2%}"
 		tmp_mktCap = f"{(parsed[ticker]['quote']['marketCap']/1000000):.0f}"
-		mktCap = f"{int(tmp_mktCap):,}".join(' B')
+		if len(str(tmp_mktCap)) > 3:
+			mktCap = f"{int(tmp_mktCap):,}".join(' B')
+		else:
+			mktCap = f"{int(tmp_mktCap):,}".join(' M')
 		change = f"{parsed[ticker]['quote']['change']:.2f}"
 		chgPct = "{:.2%}".format(parsed[ticker]['quote']['changePercent'])
 		extChgPct = "{:.2%}".format(parsed[ticker]['quote']['extendedChangePercent'])
