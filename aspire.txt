@@ -9,7 +9,7 @@ NOW
 spgi
 pypl
 twtr
-amrn
+veev
 abmd
 isrg
 algn
@@ -38,3 +38,5 @@ ec
 bl
 twou
 nvda
+usau
+nak
