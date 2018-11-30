@@ -10,42 +10,22 @@ rightNow = int(x.strftime("%H%M"))
 #print(rightNow)
 #sys.exit()	
 
+def quote_string_from_file(filename="aspire.txt"):
+    '''turns file into string of ticker symbols'''
+    with open(filename) as file:
+        fileContent = file.read()
+        string = fileContent.replace('\n',',')
+    return string;
+
 # Check if command line input
 if len(sys.argv) > 1:
-	qString = ','.join(sys.argv[1:])
+    if os.path.isfile(sys.argv[1]):
+        qString = quote_string_from_file(sys.argv[1])
+    else:
+        qString = ','.join(sys.argv[1:])
 else: 
-	filename = "aspire.txt"
-	#filename = "watch.txt"
-	if not os.path.isfile(filename):
-		print(f"{filename} does not exist")
-		sys.exit()
-	with open(filename) as file:
-		fileContent = file.read()
+        qString = quote_string_from_file()
 	
-	#with open(filename, "w") as file:
-	#	lines = filter(lambda x: x.strip(), lines)
-	#	file.writelines(lines)
-	#if not os.path.isfile(filename):
-    #	print(f"{filename} does not exist ")
-    #	sys.exit()
-    #with open(filename) as file:
-    #	lines = file.readlines()
-
-    #with open(filename, 'w') as file:
-    #	lines = filter(lambda x: x.strip(), lines)
-    #	file.writelines(lines) 
-	#file = open("config.txt","r")
-	#fileContent = file.read()
-	#file.close()
-	#stripped_content = ''.join(line.strip() for line in fileContent.splitlines())
-	#fileContent = re.sub(r'^\n',)
-	#qString=fileContent.replace('\n\n','')
-	qString=fileContent.replace('\n',',')
-	#qString=fileContent.replace(',,',',')
-	#qString=lines.replace('\n',',')
-
-#print(stripped_content)
-#sys.exit()
 #url= "https://api.iextrading.com/1.0/stock/nbix/peers"
 url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=quote,earnings,stats"#&displayPercent=true"
 #url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=stats"#&displayPercent=true"
@@ -56,16 +36,11 @@ querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types'
 parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4)
 #print(json.dumps(parsed, indent=2))
 symbolsList=querystring['symbols'][0].split(',')
-#sys.exit()	
 
-#print("{:<10}{:>10}{:>10}{:>10}{:>15}{:>15}{:>15}{:>8}{:>10}".format("Ticker","Price","Change","Change %","Change YTD%","Volume","AvgVolume","ChgVol","MktCap"))
-#print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'ExtPrice':>10}{'ExtChgPct':>10}")
 if rightNow < 630 or rightNow >= 1300:		
-	#print(f"{'Ticker':<10}{'Price':>10}{'DayLow':>10}{'DayHigh':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
 	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
 	ext = 1
 else:
-	#print(f"{'Ticker':<10}{'Price':>10}{'DayLow':>10}{'DayHigh':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>15}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}\n")
 	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}\n")
 	ext = 0
 
