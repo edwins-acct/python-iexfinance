@@ -3,6 +3,7 @@
 import requests,json,sys,os,datetime, re
 import pandas as pd 
 from urllib.parse import urlparse, urlsplit, parse_qsl, parse_qs
+from termcolor import colored
 
 x = datetime.datetime.now()
 rightNow = int(x.strftime("%H%M"))
@@ -62,6 +63,11 @@ for ticker in sorted(symbolsList):
 			mktCap = f"{int(tmp_mktCap):,}".join(' M')
 		change = f"{parsed[ticker]['quote']['change']:.2f}"
 		chgPct = "{:.2%}".format(parsed[ticker]['quote']['changePercent'])
+#                if change.startswith("-"):
+#			change = colored(change,"red")
+#                else:
+#                        change = colored(change,"green")
+
 		extChgPct = "{:.2%}".format(parsed[ticker]['quote']['extendedChangePercent'])
 		#epsReportDate = f"{parsed[ticker]['quote']['EPSReportDate']}"
 		if ext == 1:

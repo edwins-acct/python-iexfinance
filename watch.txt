@@ -10,3 +10,5 @@ med
 alrm
 mrvl
 ghdx
+twou
+lulu
