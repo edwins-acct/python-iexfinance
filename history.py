@@ -32,10 +32,10 @@ parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextradin
 #querystringl = parse_qsl(parse.query) #prints> [('symbols', 'V,FB,NBIX'), ('types', 'quote')]
 querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types': ['quote']}
 parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4)
-#item_dict = json.loads(parsed)
-#print(len(parsed['chart']))
 #print(json.dumps(parsed, indent=2))
+#print(len(parsed['chart']))
 #symbolsList=querystring['symbols'][0].split(',')
+#print(parsed['chart'][3]['changePercent'])
 #sys.exit()	
 
 print(f"{qString.upper():<10}")
@@ -50,11 +50,12 @@ print(f"{t_date:<10}{t_price:>10}{t_chgPct:>10}{t_vol1:>15}{t_chgVol:>15}")
 for i in range((len(parsed['chart'])-1),-1,-1):
     date = f"{parsed['chart'][i]['date']}"
     close = f"{parsed['chart'][i]['close']:.2f}".join('$ ') 
-    chgPct = f"{parsed['chart'][i]['changePercent']:.2f}".join(' %') 
-    if chgPct.isdigit():
-        chgPct = colored(chgPct,'green')
+    x = str(parsed['chart'][i]['changePercent'])
+    if x.startswith("-"):
+        chgPct = colored(f"{parsed['chart'][i]['changePercent']:.2f}".join(' %'),'red')
     else:
-        chgPct = colored(chgPct,'red')
+        chgPct = colored(f"{parsed['chart'][i]['changePercent']:.2f}".join(' %'),'green')
+    chgPct.strip 
     vol= f"{parsed['chart'][i]['volume']:,}" 
     chgVol = f"{(parsed['chart'][i]['volume']/t_avgVol):.0%}"
     print(f"{date:<10}{close:>10}{chgPct:>10}{vol:>15}{chgVol:>15}")
