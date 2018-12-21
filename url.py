@@ -1,11 +1,14 @@
 #!python3
 
-import requests,json,sys,os,datetime, re
-import pandas as pd 
+import requests,json,sys,os,re,pytz
+from datetime import datetime
 from urllib.parse import urlparse, urlsplit, parse_qsl, parse_qs
 from termcolor import colored
+#requests=api call;json=format output;re=regular expressions;datetime=date/time
+#pytz=time_zone;urllib.parse=url address;termcolor=change output colors
 
-x = datetime.datetime.now()
+ny_time=pytz.timezone('US/Eastern')
+x = datetime.now(ny_time)
 rightNow = int(x.strftime("%H%M"))
 #rightMinute = int(rightNow.st)
 #print(rightNow)
@@ -38,7 +41,7 @@ parsed = json.loads(response.text) #json.loads will parse data from response.tex
 #print(json.dumps(parsed, indent=2))
 symbolsList=querystring['symbols'][0].split(',')
 
-if rightNow < 630 or rightNow >= 1300:		
+if rightNow < 930 or rightNow >= 1600:		
 	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
 	ext = 1
 else:
