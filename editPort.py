@@ -2,20 +2,30 @@ import os, sys
 
 name = input("name of portfolio: ")
 name += ".txt"
+if os.path.isfile(name): 
+    edit = input("add or delete: ")
+    edit = edit.upper()
+    x=set(line.strip() for line in open(name)) 
+
 symbol = input("name of symbol(s): ")
-print("adding " + symbol + "...")
-symbol=symbol.replace(" ","\n")
+symbol = symbol.replace(',',' ').replace(';',' ').upper() #instead of using replace method 2x
+symbol=set(symbol.split())
 
-if os.path.isfile(name):
-    with open(name,'a') as file:
-        file.write(symbol + "\n")
-else:
-    with open(name,'w') as file:
-        file.write(symbol + "\n")
+if os.path.isfile(name): 
+    x=set(line.strip() for line in open(name)) 
+    if edit.startswith('D'):
+        symbol = x - symbol
+    else: 
+        symbol.update(x) #use if you know both sets are exclusive otherwise use union
 
-with open(name,'r') as file:
-    #print(file.read())
-    x=file.read()
-    x=x.replace("\n"," ")
-    print("portfolio: "+ x)
+symbol = sorted(symbol)
+y= " ".join(symbol)
+print("portfolio symbol(s): "+ y.upper())
+
+with open(name,'w') as file:
+    for sym in symbol:
+        file.write(sym.upper() + "\n")
+
+import url
+url
 #sys.exit()
