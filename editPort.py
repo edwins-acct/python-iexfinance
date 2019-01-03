@@ -26,6 +26,6 @@ with open(name,'w') as file:
     for sym in symbol:
         file.write(sym.upper() + "\n")
 
-import url
-url
+#import url
+#url
 #sys.exit()
