@@ -42,10 +42,12 @@ parsed = json.loads(response.text) #json.loads will parse data from response.tex
 symbolsList=querystring['symbols'][0].split(',')
 
 if rightNow < 930 or rightNow >= 1600:		
-	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
+	#print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
+	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}")
 	ext = 1
 else:
-	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}\n")
+#	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}\n")
+	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}")
 	ext = 0
 
 for ticker in sorted(symbolsList):
@@ -74,9 +76,11 @@ for ticker in sorted(symbolsList):
 		extChgPct = "{:.2%}".format(parsed[ticker]['quote']['extendedChangePercent'])
 		#epsReportDate = f"{parsed[ticker]['quote']['EPSReportDate']}"
 		if ext == 1:
-			print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{chgYtd:>12}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap:>10}{dayLow:>10}-{dayHigh:<10}{extPrice:>10}{extChgPct:>10}") #{epsReportDate:>10}")
+			#print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{chgYtd:>12}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap:>10}{dayLow:>10}-{dayHigh:<10}{extPrice:>10}{extChgPct:>10}") #{epsReportDate:>10}")
+			print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{avgVol:>15}{chgVol:>8}{mktCap:>10}")
 		else:
-			print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{chgYtd:>12}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap:>10}{dayLow:>10}-{dayHigh:<10}")
+			#print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{chgYtd:>12}{vol:>15}{avgVol:>15}{chgVol:>8}{mktCap:>10}{dayLow:>10}-{dayHigh:<10}")
+			print(f"{ticker:<10}{price:>10}{change:>10}{chgPct:>10}{avgVol:>15}{chgVol:>8}{mktCap:>10}")
 	except Exception:
 		print(f"{ticker:<10} Ticker not found")
 		#pass
