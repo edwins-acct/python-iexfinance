@@ -1,0 +1,32 @@
+#help!= git --help or git commit --help
+
+#check access
+    git remote -v
+    set to ssh: git remote set-url origin(upstream) git@github.com:edwins-acct/python-iexfinance.git
+    set to https: git remote set-url origin(upstream) https://github.com/edwins-acct/python-iexfinance.git
+#download code
+    git clone https://github.com/edwins-acct/python-iexfinance
+#download changes from previous download
+    git pull
+#check status
+    git status
+    git status -s (short output)
+#after making code changes add file to track; adds to staging area before commit
+    git add <file>
+#commit changes
+    git commit
+        [master ad74e8d] removed 3 lines for timecheck that didn't work
+        1 file changed, 1 insertion(+), 4 deletions(-)
+        mode change 100644 => 100755 url.p
+    git commit -m "message/comment of changes" = -m shortcut to add message 
+    git commit -a -m "message/comment of changes" = -a bypasses need to run 'git add'
+#upload code
+    git push (edwins-acct,L!, if using https)
+    git push (if using ssh)
+#remove from tracking or commiting
+    git rm <file>
+    git rm --cached <file> = allows you to keep file but prevents from commit
+#rename file
+    git mv <file> <newfilename>
+#view history
+    git log
