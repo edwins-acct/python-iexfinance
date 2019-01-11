@@ -86,17 +86,28 @@ if __name__ == "__main__":
     #rightMinute = int(rightNow.st) 
     #print(rightNow)
     # Check if command line input 
+#    print(len(sys.argv))
+#    sys.exit()
     if len(sys.argv) > 1: 
-        if os.path.isfile(sys.argv[1]): 
-            qString = quote_string_from_file(sys.argv[1]) 
+        if os.path.isfile(sys.argv[2]): 
+            qString = quote_string_from_file(sys.argv[2]) 
         else: 
-            qString = ','.join(sys.argv[1:]) 
+            qString = ','.join(sys.argv[2:]) 
     else: 
         qString = quote_string_from_file()
-	
 
-    history(qString) 
-    news(qString) 
+    if sys.argv[1] == 'history':
+        history(qString)
+
+    if sys.argv[1] == 'news':
+        news(qString)
+
+    if sys.argv[1] == 'all':
+        history(qString)
+        news(qString)
+
+#    history(qString) 
+#    news(qString) 
     print("\n") 
     
     sys.exit()	
