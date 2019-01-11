@@ -27,16 +27,26 @@ else:
         qString = quote_string_from_file()
 	
 url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/batch?types=quote,chart&range=1m"
+url_news= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/news/last/2"
 response = requests.get(url) #gets info
-parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextrading.com', path='/1.0/stock/market/batch', params='', query='symbols=V,FB,NBIX&types=quote', fragment='')
-querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types': ['quote']}
-parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4
-#print(json.dumps(parsed, indent=2))
-#print(len(parsed['chart']))
-#sys.exit()	
+if "Unknown symbol" in response.text:
+    print(response.text)
+    sys.exit()
+else: 
+    parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextrading.com', path='/1.0/stock/market/batch', params='', query='symbols=V,FB,NBIX&types=quote', fragment='') querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types': ['quote']} 
+    parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4 
+    url_news= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/news/last/5"
+    response_news = requests.get(url_news) #gets info
+    parse_news = urlparse(url_news)
+    parsed_news = json.loads(response_news.text)
 
-print(f"{qString.upper():<10}")
-print(f"{'Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}")
+
+#print(json.dumps(parsed_news, indent=2))
+#print(len(parsed_news))
+#print(parsed_news[0]['headline'])
+#sys.exit()
+
+print(f"{qString.upper() + '  Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}")
 t_price = f"{parsed['quote']['latestPrice']:.2f}".join('$ ')
 x = str(parsed['quote']['change'])
 #x = str(parsed['quote']['changePercent'])
@@ -70,6 +80,12 @@ for i in range((len(parsed['chart'])-1),-1,-1): #in ascending order
     print(f"{date:<10}{close:>10}{chg:>20}{chgPct:>20}{vol:>12}{chgVol:>10}")
 
 #day1 = f"{parsed['chart'][0]['close']}"
-#print(f"{price:>10}\n")
-#print(f"{day1:>10}\n")
+print("\nNEWS:")
+for i in range(0, len(parsed_news)):
+    date_news = parsed_news[int(i)]['datetime']
+    headline = parsed_news[int(i)]['headline']
+    source = colored(parsed_news[int(i)]['source'], 'yellow')
+    url = colored(parsed_news[int(i)]['url'], 'blue')
+    print(colored(date_news[:10], 'cyan')+"  "+headline+"  "+source+"\n   "+url)
+
 sys.exit()	
