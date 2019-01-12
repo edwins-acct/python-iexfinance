@@ -1,6 +1,6 @@
 #!python3
 
-import requests,json,sys,os,re,pytz
+import requests,json,sys,os,re,pytz, stocks
 from datetime import datetime
 from urllib.parse import urlparse, urlsplit, parse_qsl, parse_qs
 from termcolor import colored
@@ -9,38 +9,22 @@ from termcolor import colored
 
 ny_time=pytz.timezone('US/Eastern')
 x = datetime.now(ny_time)
-rightNow = int(x.strftime("%H%M"))
-#rightMinute = int(rightNow.st)
-#print(rightNow)
-#sys.exit()	
-
-def quote_string_from_file(filename="aspire.txt"):
-    '''turns file into string of ticker symbols'''
-    with open(filename) as file:
-        fileContent = file.read()
-        string = fileContent.replace('\n',',')
-    return string;
+rightNow = int(x.strftime("%H%M")) #to determine if extended hours
 
 # Check if command line input
 if len(sys.argv) > 1:
     if os.path.isfile(sys.argv[1]):
-        qString = quote_string_from_file(sys.argv[1])
+        qString = stocks.quote_string_from_file(sys.argv[1])
     else:
         qString = ','.join(sys.argv[1:])
 else: 
-        qString = quote_string_from_file()
+        qString = stocks.quote_string_from_file()
 	
-#url= "https://api.iextrading.com/1.0/stock/nbix/peers"
 url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=quote,earnings,stats"#&displayPercent=true"
-#url= "https://api.iextrading.com/1.0/stock/market/batch?symbols=" + str(qString.upper()) +"&types=stats"#&displayPercent=true"
-response = requests.get(url) #gets info
-parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextrading.com', path='/1.0/stock/market/batch', params='', query='symbols=V,FB,NBIX&types=quote', fragment='')
-#querystringl = parse_qsl(parse.query) #prints> [('symbols', 'V,FB,NBIX'), ('types', 'quote')]
-querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types': ['quote']}
-parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4)
-#print(json.dumps(parsed, indent=2))
-symbolsList=querystring['symbols'][0].split(',')
+parsed = stocks.get_data(url)
+symbolsList=qString.split(',') #create list from symbol string
 
+#Prints headings
 if rightNow < 930 or rightNow >= 1600:		
 	#print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'Change YTD%':>12}{'Volume':>15}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}{'Day Low-High Range':>20}{'ExtPrice':>10}{'ExtChgPct':>10}\n")
 	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}")
@@ -50,6 +34,7 @@ else:
 	print(f"{'Ticker':<10}{'Price':>10}{'Change':>10}{'Change %':>10}{'AvgVolume':>15}{'ChgVol':>8}{'MktCap':>10}")
 	ext = 0
 
+#Prints data
 for ticker in sorted(symbolsList):
 	try:
 		price = f"{parsed[ticker]['quote']['latestPrice']:.2f}".join('$ ')

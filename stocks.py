@@ -9,11 +9,12 @@ def quote_string_from_file(filename="aspire.txt"):
     with open(filename) as file:
         fileContent = file.read()
         string = fileContent.replace('\n',',')
+    string = string[:-1] #deletes trailing comma in string
     return string;
 
 
 def get_data(url): 
-    '''query call'''
+    '''query api call'''
     response = requests.get(url) #gets info 
     if "Unknown symbol" in response.text: 
         print(response.text) 
@@ -22,15 +23,11 @@ def get_data(url):
         parse = urlparse(url) #prints> ParseResult(scheme='https', netloc='api.iextrading.com', path='/1.0/stock/market/batch', params='', query='symbols=V,FB,NBIX&types=quote', fragment='') querystring = parse_qs(parse.query)  #prints> {'symbols': ['V,FB,NBIX'], 'types': ['quote']} 
         parsed = json.loads(response.text) #json.loads will parse data from response.text, has option to format. ex: json.loads(response.text, indent=4 
         
-    #print(json.dumps(parsed_news, indent=2)) 
-    #print(len(parsed_news)) 
-    #print(parsed_news[0]['headline']) 
-    #sys.exit()
-
     return parsed
 
 
 def history(qString): 
+    '''gets historical data for last 30 trading days'''
     url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/batch?types=quote,chart&range=1m"
     parsed = get_data(url)
     print(f"{qString.upper() + '  Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}") 
@@ -69,6 +66,7 @@ def history(qString):
 
 
 def news(qString): 
+    '''gets news for symbol'''
     url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/news/last/5"
     parsed = get_data(url)
     print("\nNEWS:") 
@@ -81,20 +79,18 @@ def news(qString):
 
 if __name__ == "__main__": 
     x = datetime.datetime.now() 
-    rightNow = int(x.strftime("%H%M")) 
     t_date = x.strftime("%Y-%m-%d") 
-    #rightMinute = int(rightNow.st) 
-    #print(rightNow)
-    # Check if command line input 
-#    print(len(sys.argv))
-#    sys.exit()
-    if len(sys.argv) > 1: 
-        if os.path.isfile(sys.argv[2]): 
-            qString = quote_string_from_file(sys.argv[2]) 
-        else: 
-            qString = ','.join(sys.argv[2:]) 
-    else: 
-        qString = quote_string_from_file()
+    # Check if command line input has exactly 3 args
+    if len(sys.argv) != 3 : 
+        print('Usage: '+ sys.argv[0] + ' <all|news|history> <symbol>\n')
+        sys.exit()
+#        if os.path.isfile(sys.argv[2]): 
+#            qString = quote_string_from_file(sys.argv[2]) 
+#        else: 
+            #qString = ','.join(sys.argv[2:]) 
+#    else: 
+#        qString = quote_string_from_file()
+    qString = ','.join(sys.argv[2:]) 
 
     if sys.argv[1] == 'history':
         history(qString)
