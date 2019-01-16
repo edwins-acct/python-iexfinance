@@ -1,0 +1,27 @@
+MODULES:
+requests=api call;
+json=format output;
+re=regular expressions;
+datetime=date/time
+pytz=time_zone;
+urllib.parse=url address;
+termcolor=change output colors
+sqlite3=sqlite
+##################
+DB:
+sqlite3
+    connect('dbname')
+    cursor() not really needed unless multiple instances; once connect object created can use that
+    commit()
+    close()
+    rollback()
+    execute(sql[, parameters]) -use for single transaction
+        execute("insert into people values (?, ?)", (who, age))
+    executemany(sql[, parameters]) -use for multiple transactions; more efficient and less resource intensive than using loop/execute()
+        people_list = [
+        ('Simon', 'Doe', 20, 'Python Master'),
+        ('John', 'Doe', 50, 'Java Master'),
+        ('Jane', 'Doe', 30, 'C++ Master'),
+        ('Smelly', 'Doe', 2, 'Shower Master')
+        ]
+        executemany("""INSERT INTO people(firstname, lastname, age, occupation) VALUES(?, ?, ?, ?)""", people_list)
