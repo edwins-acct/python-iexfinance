@@ -74,9 +74,8 @@ def get_data(url):
     return parsed
 
 
-def history(qString): 
+def history(url,qString): 
     '''gets historical data for last 30 trading days'''
-    url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/batch?types=quote,chart&range=1m"
     parsed = get_data(url)
     t_price = f"{parsed['quote']['latestPrice']:.2f}".join('$ ') 
     x = str(parsed['quote']['change']) 
@@ -114,9 +113,8 @@ def history(qString):
         chgVol = f"{(parsed['chart'][i]['volume']/t_avgVol):.0%}" 
         print(f"{date:<10}{close:>10}{chg:>20}{chgPct:>20}{vol:>12}{chgVol:>10}")
 
-def earnings(stock='all'):
+def earnings(url,stock='all'):
     '''get earnings with an option for a specific symbol'''
-    url = 'https://api.iextrading.com/1.0/stock/market/today-earnings'
     parsed = get_data(url)
     for x in parsed:
         if x == 'bto':
@@ -144,9 +142,8 @@ def earnings(stock='all'):
         print("\n")
 
 
-def news(qString): 
+def news(url,qString): 
     '''gets news for symbol'''
-    url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/news/last/5"
     parsed = get_data(url)
     print("\nNEWS:") 
     for i in range(0, len(parsed)): 
@@ -161,7 +158,7 @@ if __name__ == "__main__":
     t_date = x.strftime("%Y-%m-%d") 
     # Check if command line input has exactly 3 args
     if len(sys.argv) != 3 : 
-        print('Usage: '+ sys.argv[0] + ' <all|news|history> <symbol>\n')
+        print('Usage: '+ sys.argv[0] + ' <all|news|history|earnings> <symbol>\n')
         sys.exit()
 #        if os.path.isfile(sys.argv[2]): 
 #            qString = quote_string_from_file(sys.argv[2]) 
@@ -169,20 +166,21 @@ if __name__ == "__main__":
             #qString = ','.join(sys.argv[2:]) 
 #    else: 
 #        qString = quote_string_from_file()
-    qString = ','.join(sys.argv[2:]) 
+    qString = ','.join(sys.argv[2:])
+    url = 'https://api.iextrading.com/1.0/' 
 
     if sys.argv[1] == 'history':
-        history(qString)
+        history(f"{url}stock/{qString}/batch?types=quote,chart&range=1m",qString)
 
     if sys.argv[1] == 'news':
-        news(qString)
+        news(f"{url}stock/{qString}/news/last/5",qString)
 
     if sys.argv[1] == 'earnings':
-        earnings()
+        earnings(f"{url}stock/market/today-earnings")
 
     if sys.argv[1] == 'all':
-        history(qString)
-        news(qString)
+        history(f"{url}stock/{qString}/batch?types=quote,chart&range=1m",qString)
+        news(f"{url}stock/{qString}/news/last/5",qString)
 
 #    history(qString) 
 #    news(qString) 
