@@ -23,6 +23,7 @@
 #upload code
     git push (edwins-acct,L!, if using https)
     git push (if using ssh)
+    git push origin +master (to force)
 #remove from tracking or commiting
     git rm <file>
     git rm --cached <file> = allows you to keep file but prevents from commit
