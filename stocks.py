@@ -78,7 +78,6 @@ def history(qString):
     '''gets historical data for last 30 trading days'''
     url= "https://api.iextrading.com/1.0/stock/" + str(qString.upper()) +"/batch?types=quote,chart&range=1m"
     parsed = get_data(url)
-    print(f"{qString.upper() + '  Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}") 
     t_price = f"{parsed['quote']['latestPrice']:.2f}".join('$ ') 
     x = str(parsed['quote']['change']) 
     #x = str(parsed['quote']['changePercent']) 
@@ -93,7 +92,10 @@ def history(qString):
     t_vol1 = f"{parsed['quote']['latestVolume']:,}" 
     t_avgVol = parsed['quote']['avgTotalVolume'] 
     t_chgVol = f"{(t_vol/t_avgVol):.0%}" 
-    print(f"{t_date:<10}{t_price:>10}{t_chg:>20}{t_chgPct:>20}{t_vol1:>12}{t_chgVol:>10}") 
+    print(colored(f"{parsed['quote']['companyName']}({qString.upper()}) {t_price:>10}{t_chg:>20}{t_chgPct:>20}{t_vol1:>12}{t_chgVol:>10}",'yellow'))
+    print(f"{'  Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}")
+    #print(f"{qString.upper() + '  Date':>10}{'Close':>10}{'Change $':>10}{'Change %':>10}{'Volume':>12}{'AvgVol':>10}") 
+    #print(f"{t_date:<10}{t_price:>10}{t_chg:>20}{t_chgPct:>20}{t_vol1:>12}{t_chgVol:>10}") 
     #for i in range(0,len(parsed['chart'])): #in descending order 
     for i in range((len(parsed['chart'])-1),-1,-1): #in ascending order 
         date = f"{parsed['chart'][i]['date']}" 
@@ -111,6 +113,35 @@ def history(qString):
         vol= f"{parsed['chart'][i]['volume']:,}" 
         chgVol = f"{(parsed['chart'][i]['volume']/t_avgVol):.0%}" 
         print(f"{date:<10}{close:>10}{chg:>20}{chgPct:>20}{vol:>12}{chgVol:>10}")
+
+def earnings(stock='all'):
+    '''get earnings with an option for a specific symbol'''
+    url = 'https://api.iextrading.com/1.0/stock/market/today-earnings'
+    parsed = get_data(url)
+    for x in parsed:
+        if x == 'bto':
+            t = 'Before Market Opens'
+        else:
+            t = 'After Market Closes'
+
+        print(colored(f"{t}",'yellow'))
+        for i in range(0,len(parsed[x])):
+            companyName = parsed[x][i]['quote']['companyName']+"("+parsed[x][i]['symbol']+")"
+            consensusEPS = parsed[x][i]['consensusEPS']
+            actualEPS = parsed[x][i]['actualEPS']            
+            numberOfEstimates = parsed[x][i]['numberOfEstimates']
+            fiscalPeriod = parsed[x][i]['fiscalPeriod']
+            print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15}")
+            #if not parsed[x][i]['headline']:
+             #   print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15}")
+                #headline = parsed[x][i]['headline']
+                #print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15} {headline}")
+            #else:
+             #   headline = parsed[x][i]['headline']
+              #  print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15} {headline}")
+
+
+        print("\n")
 
 
 def news(qString): 
@@ -145,6 +176,9 @@ if __name__ == "__main__":
 
     if sys.argv[1] == 'news':
         news(qString)
+
+    if sys.argv[1] == 'earnings':
+        earnings()
 
     if sys.argv[1] == 'all':
         history(qString)
