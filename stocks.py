@@ -116,6 +116,8 @@ def history(url,qString):
 def earnings(url,stock='all'):
     '''get earnings with an option for a specific symbol'''
     parsed = get_data(url)
+    #print(json.dumps(parsed, indent=4))
+    #sys.exit()
     for x in parsed:
         if x == 'bto':
             t = 'Before Market Opens'
@@ -125,18 +127,27 @@ def earnings(url,stock='all'):
         print(colored(f"{t}",'yellow'))
         for i in range(0,len(parsed[x])):
             companyName = parsed[x][i]['quote']['companyName']+"("+parsed[x][i]['symbol']+")"
-            consensusEPS = parsed[x][i]['consensusEPS']
-            actualEPS = parsed[x][i]['actualEPS']            
+            consensusEPS = f"{parsed[x][i]['consensusEPS']:.2f}"
+            #actualEPS = f"{parsed[x][i]['actualEPS']:.2f}"            
             numberOfEstimates = parsed[x][i]['numberOfEstimates']
             fiscalPeriod = parsed[x][i]['fiscalPeriod']
-            print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15}")
-            #if not parsed[x][i]['headline']:
-             #   print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15}")
-                #headline = parsed[x][i]['headline']
-                #print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15} {headline}")
-            #else:
-             #   headline = parsed[x][i]['headline']
-              #  print(f"{companyName:<60} {consensusEPS:5}{actualEPS:5}{numberOfEstimates:5} {fiscalPeriod:>15} {headline}")
+            extendedChange = f"{parsed[x][i]['quote']['extendedChange']:.2f}"
+            try:
+                headline = parsed[x][i]['headline']
+                if x == 'amc':
+                    headline = f"{extendedChange:>8}  {headline:>5}"
+                #else:
+                 #   headline = f"{headline:<70}"
+
+                #print(f"{companyName:<55}{fiscalPeriod:>15}{consensusEPS:>10}{numberOfEstimates:>5}{headline:<70}")
+                print(f"{companyName:<55}{fiscalPeriod:>15}{consensusEPS:^10}{headline}")
+            except KeyError:
+                headline = ''
+                if x == 'amc':
+                    headline = f"{extendedChange:>8}  {headline:>5}"
+                
+                print(f"{companyName:<55}{fiscalPeriod:>15}{consensusEPS:>10}{headline:<70}")
+                continue
 
 
         print("\n")
